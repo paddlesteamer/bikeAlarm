@@ -1,0 +1,6 @@
+package main
+
+const telegramToken  = "<token>"
+const telegramChatId = "<chat id>"
+
+const deviceId       = "<USB device id XXXX:YYYY>"

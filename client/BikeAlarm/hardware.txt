@@ -1,0 +1,21 @@
+ Arduino Nano               Dorji DRF7020D20
+--------------             --------------------------
+     GND                      GND
+     5V                       VCC
+     D5                       EN
+     D4                       RXD
+     D3                       TXD
+
+                            Relay
+                           --------------------------
+     D6                       IN
+     GND                      GND
+     5V                       VCC
+
+                            L3GD20H Gyro
+                           --------------------------
+     3.3V                     VDD
+     GND                      GND
+     A4                       SDA
+     A5                       SCL
+

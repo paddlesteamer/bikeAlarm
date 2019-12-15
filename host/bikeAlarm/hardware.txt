@@ -1,0 +1,6 @@
+ Dorji DRF7020D13             PL2303 USB-TTL Converter
+------------------           --------------------------
+      VCC                              5V
+      GND                              GND
+      RXD                              TX
+      TXD                              RX
