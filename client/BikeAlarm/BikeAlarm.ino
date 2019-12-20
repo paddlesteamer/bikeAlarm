@@ -10,6 +10,9 @@
 #define DORJI_TX     4
 #define DORJI_RX     3
 
+#define DORJI_PRE  "@"
+#define DORJI_POST "!"
+
 SoftwareSerial  dorji(DORJI_RX, DORJI_TX);
 L3G gyro;
 
@@ -45,16 +48,22 @@ void setup() {
   gyro.enableDefault();
 }
 
+void broadcastAlarm() {
+  digitalWrite(DORJI_ENABLE, HIGH);
+  delay(50);
+  dorji.write(DORJI_PRE);
+  dorji.write("ALARM");
+  dorji.write(DORJI_POST);
+  delay(50);
+  digitalWrite(DORJI_ENABLE, LOW);
+}
 
 void alarmOn() {
   alarm = true;
   Serial.println("Alarm!");
   digitalWrite(RELAY, LOW);
-  digitalWrite(DORJI_ENABLE, HIGH);
-  delay(50);
-  dorji.write("ALARM!\n");
-  delay(50);
-  digitalWrite(DORJI_ENABLE, LOW);
+
+  broadcastAlarm();  
 }
 
 void alarmOff() {
@@ -62,7 +71,6 @@ void alarmOff() {
 
   alarm = false;
 }
-
 
 
 void loop() {

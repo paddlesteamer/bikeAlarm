@@ -95,17 +95,45 @@ func listen(port string) {
     defer dorji.Close()
 
     buf := make([]byte, 8)
+    c := make([]byte, 1)
+    msgState := -1
+    t := time.Now()
     for true {
-        n, err := dorji.Read(buf)
+        n, err := dorji.Read(c)
         if err != nil {
             break
         }
 
-        if strings.Contains(string(buf[:n]), "ALARM") {
-            telegram.SendMessage("BikeAlarm")
-            fmt.Println("ALARM")
+        if n == 0 {
+            continue
+        }
+
+        if msgState == -1 {
+            if c[0] != '@' {
+                continue
+            }
+
+            msgState = 0
+            t = time.Now()
+        } else if c[0] == '!' {
+            msgState = -1
+
+            if strings.Contains(string(buf), "ALARM") {
+                telegram.SendMessage("BikeAlarm")
+                fmt.Println("ALARM")
+            }
         } else {
-            fmt.Printf("%s", string(buf[:n]))
+            cur := time.Now()
+
+            //if cur.Sub(t).Milliseconds() > 2000 {
+            if cur.Sub(t) > 2000000000 { // because of old golang on rpi
+                msgState = -1
+                continue
+            }
+
+            buf[msgState] = c[0]
+
+            msgState++
         }
 
     }
