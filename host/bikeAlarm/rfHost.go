@@ -117,13 +117,14 @@ func listen(port string) {
             t = time.Now()
         } else if c[0] == '!' {
             msgState = -1
-            for i:=0; i<len(buf); i++ {
-                buf[i] = 0
-            }
 
             if strings.Contains(string(buf), "ALARM") {
                 telegram.SendMessage("BikeAlarm")
                 fmt.Println("ALARM")
+            }
+
+            for i:=0; i<len(buf); i++ {
+                buf[i] = 0
             }
         } else {
             cur := time.Now()
