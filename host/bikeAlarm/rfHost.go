@@ -117,6 +117,9 @@ func listen(port string) {
             t = time.Now()
         } else if c[0] == '!' {
             msgState = -1
+            for i:=0; i<len(buf); i++ {
+                buf[i] = 0
+            }
 
             if strings.Contains(string(buf), "ALARM") {
                 telegram.SendMessage("BikeAlarm")
@@ -128,6 +131,9 @@ func listen(port string) {
             //if cur.Sub(t).Milliseconds() > 2000 {
             if cur.Sub(t) > 2000000000 { // because of old golang on rpi
                 msgState = -1
+                for i:=0; i<len(buf); i++ {
+                    buf[i] = 0
+                }
                 continue
             }
 
