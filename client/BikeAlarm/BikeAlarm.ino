@@ -2,8 +2,11 @@
 #include <Wire.h>
 #include <L3G.h>
 #include <SoftwareSerial.h>
+#include <LowPower.h>
 
-#define RD_INTERVAL 500
+#define DEBUG
+
+#define RD_INTERVAL SLEEP_250MS
 
 #define RELAY        6
 #define DORJI_ENABLE 5
@@ -29,19 +32,23 @@ void setup() {
   digitalWrite(RELAY, HIGH);
   digitalWrite(DORJI_ENABLE, LOW);
   
-  Serial.begin(9600);
   dorji.begin(9600);
   Wire.begin();
-
+  
+#ifdef DEBUG
+  Serial.begin(9600);
   while(!Serial);
 
   Serial.println("Starting...");
+#endif
 
   delay(100);
 
   if (!gyro.init())
   {
+#ifdef DEBUG
     Serial.println("Failed to autodetect gyro type!");
+#endif
     while (1);
   }
 
@@ -60,7 +67,11 @@ void broadcastAlarm() {
 
 void alarmOn() {
   alarm = true;
+  
+#ifdef DEBUG
   Serial.println("Alarm!");
+#endif
+
   digitalWrite(RELAY, LOW);
 
   broadcastAlarm();  
@@ -72,21 +83,18 @@ void alarmOff() {
   alarm = false;
 }
 
-
 void loop() {
   gyro.read();
 
   int curX = (int) gyro.g.x;
   int curMil = millis();
-
+  
   if (alarm) {
-    
     
     if ((curMil - lastEn) > 5000)
       alarmOff();
     else {
       lastX = curX;
-      delay(RD_INTERVAL);
       return;
     }
   }
@@ -97,7 +105,7 @@ void loop() {
   } 
   
   lastX = curX;
-  
 
-  delay(RD_INTERVAL);
+  LowPower.idle(RD_INTERVAL, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF, 
+                SPI_OFF, USART0_OFF, TWI_OFF);
 }
